@@ -33,12 +33,14 @@ create table jobs (
   title text not null,
   company text not null,
   location text not null,
-  salary integer,
+  salary_min integer,
+  salary_max integer,
   work_type text,
   description text,
   tags text[],
   benefits text[],
   contact_email text,
+  is_active boolean default true,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 

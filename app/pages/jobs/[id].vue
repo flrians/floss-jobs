@@ -16,12 +16,19 @@
                   <Briefcase :size="32" />
                 </div>
                 <div>
+                  <div class="job-salary-top">
+                    ${{ (job.salary_min || 0) / 1000 }}k – ${{ (job.salary_max || job.salary_min || 0) / 1000 }}k <small>/ Year</small>
+                  </div>
                   <h1 class="job-title">{{ job.title }}</h1>
-                  <p class="company-name">{{ job.company }}</p>
+                  <div class="company-row">
+                    <p class="company-name">{{ job.company }}</p>
+                  </div>
                 </div>
               </div>
-              <div class="job-salary-badge">
-                ${{ job.salary / 1000 }}k <small>/ Year</small>
+              <div class="job-actions-right">
+                <span :class="['status-badge', { 'active': job.is_active, 'offline': !job.is_active }]">
+                  {{ job.is_active ? 'Active' : 'Offline' }}
+                </span>
               </div>
             </div>
 
@@ -35,18 +42,7 @@
 
           <!-- Content Section -->
           <section class="detail-content card">
-            <div class="content-block">
-              <h2>About the Role</h2>
-              <p>{{ job.description || 'We are looking for a passionate professional to join our fast-growing team. You will be responsible for building scalable solutions and collaborating with cross-functional teams to deliver high-quality products.' }}</p>
-            </div>
-
-            <div class="content-block">
-              <h2>Technical Environment</h2>
-              <div class="tags-row">
-                <span v-for="tag in job.tags" :key="tag" class="tag-large">{{ tag }}</span>
-              </div>
-            </div>
-
+            <!-- 1. What you'll do -->
             <div class="content-block">
               <h2>What you'll do</h2>
               <ul>
@@ -57,13 +53,28 @@
               </ul>
             </div>
 
+            <!-- 2. What the company searches for -->
+            <div class="content-block">
+              <h2>What the company searches for</h2>
+              <div class="tags-row" style="margin-bottom: 1.5rem;">
+                <span v-for="tag in job.tags" :key="tag" class="tag-large">{{ tag }}</span>
+              </div>
+              <p>We are looking for individuals who are not only technically proficient but also possess a strong desire to solve complex problems and contribute to a collaborative environment.</p>
+            </div>
+
+            <!-- 3. About the company -->
+            <div class="content-block">
+              <h2>About {{ job.company }}</h2>
+              <p>{{ job.description || 'A visionary company dedicated to pushing the boundaries of technology and innovation.' }}</p>
+            </div>
+
+            <!-- 4. Benefits -->
             <div class="content-block">
               <h2>Benefits</h2>
               <div class="benefits-grid">
-                <div class="benefit-item">✅ Competitive Equity</div>
-                <div class="benefit-item">✅ Remote-First Culture</div>
-                <div class="benefit-item">✅ Learning Budget ($2k/year)</div>
-                <div class="benefit-item">✅ Private Healthcare</div>
+                <div v-for="benefit in (job.benefits || ['Competitive Equity', 'Remote-First Culture', 'Learning Budget'])" :key="benefit" class="benefit-item">
+                  ✅ {{ benefit }}
+                </div>
               </div>
             </div>
           </section>
@@ -146,7 +157,7 @@ const toggleFavourite = () => {
 }
 
 .detail-header {
-  padding: 2.5rem;
+  padding: 2rem 2.5rem;
   margin-bottom: 2rem;
 }
 
@@ -163,37 +174,79 @@ const toggleFavourite = () => {
   align-items: center;
 }
 
-.job-title {
-  font-size: 2.25rem;
+.job-salary-top {
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  font-weight: 700;
   margin-bottom: 0.25rem;
+}
+
+.job-salary-top small {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+.job-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
   color: var(--color-text);
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.company-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .company-name {
-  font-size: 1.25rem;
-  color: var(--color-primary);
-  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
 }
 
-.job-salary-badge {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
+.status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
   font-weight: 800;
-  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
-.job-salary-badge small {
-  font-size: 0.8rem;
-  opacity: 0.8;
+.status-badge.active {
+  background: #e6fffa;
+  color: #38b2ac;
+}
+
+.status-badge.offline {
+  background: #fff5f5;
+  color: #e53e3e;
+}
+
+.job-actions-right {
+  display: flex;
+  align-items: center;
 }
 
 .header-meta {
   display: flex;
-  gap: 2rem;
-  padding-top: 2rem;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--color-border);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .meta-item {
